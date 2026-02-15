@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4-Cut Photobooth 📸</title>
+    <link rel="stylesheet" href="memories.css">
+    <!-- LIBRARY FOR DOWNLOADING -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+
+<body>
+
+    <div class="booth-wrapper">
+        <!-- 1. SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>Design Studio</h3>
+            </div>
+
+            <div class="scroll-area">
+                <h4>Step 1: Card Color</h4>
+                <div class="gallery color-grid">
+                    <div class="color-opt" style="background: #efc7ff;" onclick="setCardColor('#efc7ff')"></div>
+                    <div class="color-opt" style="background: #ffffff;" onclick="setCardColor('#ffffff')"></div>
+                    <div class="color-opt" style="background: #ffcfdf;" onclick="setCardColor('#ffcfdf')"></div>
+                    <div class="color-opt" style="background: #c7ceea;" onclick="setCardColor('#c7ceea')"></div>
+                    <div class="color-opt" style="background: #e2f0cb;" onclick="setCardColor('#e2f0cb')"></div>
+                    <div class="color-opt" style="background: #f9eec7;" onclick="setCardColor('#f9eec7')"></div>
+                    <div class="color-opt" style="background: #1a1a1a;" onclick="setCardColor('#1a1a1a')"></div>
+                    <div class="color-opt" style="background: #4b0505;" onclick="setCardColor('#4b0505')"></div>
+                </div>
+
+                <h4>Step 2: Add Stickers</h4>
+                <div class="gallery sticker-grid">
+                    <img src="lipstick.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="star.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="stemp.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="spiddy.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="redbow.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="pinkbow.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="pinkstamp.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="orchite.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="flower.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="lotus.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="purbow.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="purflow.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="purstamp.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="mulflow.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="yellow.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="coco.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="shell.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="heart.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="moon.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="tusnami.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="bluebarry.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="headset.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="bear.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="headcat.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="standcat.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="fullmoon.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="whatever.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="turtle.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="clove.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="cat.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="sun.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="sunflower.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                    <img src="shimer.png" class="sticker-source" draggable="true" ondragstart="drag(event)">
+                </div>
+            </div>
+            <p class="hint">Drag stickers onto your strip! ✨</p>
+        </div>
+
+        <!-- 2. CAMERA AREA -->
+        <div class="camera-area">
+            <div class="video-wrap">
+                <video id="webcam" autoplay playsinline></video>
+                <div id="countdown-text"></div>
+            </div>
+
+            <button id="snap-btn">START SESSION 📸</button>
+
+            <!-- DOWNLOAD STRIP-->
+            <div id="final-step-container" style="display: none; margin-top: 20px; text-align: center;">
+                <button onclick="downloadStrip()" class="btn-download">SAVE PHOTO 💾</button>
+                <div style="margin-top: 15px;">
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. THE STRIP -->
+        <div class="strip-outer" id="main-strip" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="photo-slots">
+                <div class="slot" id="slot-1"></div>
+                <div class="slot" id="slot-2"></div>
+                <div class="slot" id="slot-3"></div>
+                <div class="slot" id="slot-4"></div>
+            </div>
+            <div class="strip-footer">ฅʕ•̫͡•ʔฅ</div>
+        </div>
+    </div>
+
+    <canvas id="hidden-canvas" style="display:none;"></canvas>
+    <script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,180 @@
+:root {
+    --bg-dark: #1a1a1a;
+    --envelope-red: #b22222;
+    --envelope-light: #d63031;
+    --gold: #d4af37;
+    --paper: #fffcf2;
+}
+
+body {
+    background-image: url('Desktop\ -\ 4.png');
+    margin: 0;
+    overflow: hidden; /* Prevents scrolling during animation */
+}
+
+/* Back Arrow Styling */
+.back-arrow {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: var(--gold);
+    text-decoration: none;
+    font-family: sans-serif;
+    font-weight: bold;
+    z-index: 100;
+}
+
+/* 1. Centering the Container */
+.main-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    background: radial-gradient(circle, rgba(214,48,49,0.2) 0%, rgba(26,26,26,1) 90%);
+
+}
+
+.envelope-container {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    background-color: var(--envelope-red);
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* 2. Top Flap (Center-locked) */
+.envelope-top-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0; height: 0;
+    border-top: 100px solid var(--envelope-red);
+    border-left: 150px solid transparent;
+    border-right: 150px solid transparent;
+    transform-origin: top;
+    transition: transform 0.5s ease, z-index 0.5s;
+    z-index: 4;
+}
+
+/* 3. Front/Side Flaps */
+.envelope-front {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0; height: 0;
+    border-left: 150px solid var(--envelope-light);
+    border-right: 150px solid var(--envelope-light);
+    border-bottom: 100px solid var(--envelope-light);
+    border-top: 100px solid transparent;
+    z-index: 3;
+}
+
+/* 4. The Gold Heart (Perfectly Centered) */
+.gold-heart {
+    position: absolute;
+    top: 47%;
+    left: 53%;
+    width: 45px;
+    height: 45px;
+    background: var(--gold);
+    z-index: 5;
+    /* This centers the heart on its own axis */
+    transform: translate(-50%, -20%); 
+    clip-path: path('M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z');
+    transition: opacity 0.3s;
+}
+
+/* 5. The Paper */
+.letter-paper {
+    position: absolute;
+    bottom: 5px;
+    left: 5%;
+    width: 90%;
+    height: 90%;
+    background: var(--paper);
+    padding: 20px;
+    box-sizing: border-box;
+    transition: transform 0.8s ease;
+    z-index: 2;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.typewriter-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.4;
+    white-space: pre-wrap;
+}
+
+/* --- ACTIVE STATES --- */
+.envelope-container.open .envelope-top-flap {
+    transform: rotateX(180deg);
+    z-index: 1;
+}
+
+.envelope-container.open .letter-paper {
+    transform: translateY(-130px);
+    height: 250px;
+    z-index: 10;
+}
+
+.envelope-container.open .gold-heart {
+    opacity: 0;
+}
+
+/* --- RESPONSIVENESS (Mobile) --- */
+@media (max-width: 480px) {
+    .envelope-container {
+        width: 260px;
+        height: 180px;
+    }
+    
+    .envelope-top-flap {
+        border-top-width: 90px;
+        border-left-width: 130px;
+        border-right-width: 130px;
+    }
+    
+    .envelope-front {
+        border-left-width: 130px;
+        border-right-width: 130px;
+        border-bottom-width: 90px;
+        border-top-width: 90px;
+    }
+    
+    .envelope-container.open .letter-paper {
+        transform: translateY(-110px);
+        width: 95%;
+        left: 2.5%;
+    }
+}
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+}
+
+.envelope-wrapper {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Stop floating when the letter is opened */
+.envelope-wrapper.open {
+    animation: none;
+}
+
+@keyframes heartbeat {
+    0% { transform: translate(-50%, -20%) scale(1); }
+    15% { transform: translate(-50%, -20%) scale(1.15); }
+    30% { transform: translate(-50%, -20%) scale(1); }
+    45% { transform: translate(-50%, -20%) scale(1.15); }
+    60% { transform: translate(-50%, -20%) scale(1); }
+}
+
+.gold-heart {
+    animation: heartbeat 2s infinite;
+}

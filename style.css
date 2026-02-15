@@ -1,0 +1,294 @@
+/* --- ROOT COLORS --- */
+:root {
+    --pastel-pink: #FFD1DC; 
+    --dark-textbday: #ff7293;
+    --pastel-purple: #cb72ff;
+    --dark-purple: #9c38ff;
+}
+
+/* --- MAIN BODY (CAKE PAGE) --- */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    width: 100vw;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background-image: url('Desktop - 3.png');
+    background-size: 100% 100%; /* The "Stability Fix" we did */
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    overflow-y: auto; /* Allows scrolling to the gift button */
+}
+
+/* --- LOADING PAGE --- */
+#loading-page {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('Desktop - 2.png');
+    background-size: 100% 100%; /* Stability fix */
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 9999;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+}
+
+.loader-content {
+    text-align: center; 
+    color: rgb(0, 0, 0);
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+}
+
+.loading-text { font-size: 1.8em; font-weight: bold; }
+
+.dot-loader {
+    display: block;
+    font-size: 3em;
+    font-weight: bold;
+    animation: typing-dots 1.5s steps(3) infinite;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0 auto;
+}
+
+@keyframes typing-dots {
+    0% { width: 0; }
+    100% { width: 1.5em; } 
+}
+
+/* --- OVERLAYS (Choice Screens / Angry Cat) --- */
+.screen-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(152, 114, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 8000;
+}
+    
+.card {
+    text-align: center;
+    padding: 30px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    width: 85%;
+    max-width: 400px;
+    color: #333;
+}
+
+.btn-yes, .btn-no, .btn-retry, .btn-main-gift {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 50px;
+    font-family: inherit;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+    background-color: var(--dark-purple);
+    color: rgb(255, 255, 255);
+}
+
+.btn-yes:hover, .btn-main-gift:hover { transform: scale(1.1); background-color: #8354ff; }
+
+/* --- MAIN CONTENT LAYOUT --- */
+#main-content {
+    width: 100%;
+    display: none; /* JS toggles this to flex */
+    flex-direction: column;
+    align-items: center;
+    padding-top: 50px;
+}
+
+.heading_tulip_box {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    width: 90%;
+}
+
+.big-text { font-size: 2.5rem; font-weight: bold; color: #333; margin: 0; }
+.small-text { font-size: 1.2rem; color: #555; }
+
+.tulip_flower {
+    width: 280px;
+    height: 300px;
+    background-image: url('tulip.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* --- CAKE & CANDLE --- */
+.cake-area { margin-top: 50px; text-align: center; }
+
+.container-cake {
+    width: 300px;
+    height: 300px;
+    background-image: url('cack.png.png'); /* Check this filename! */
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.candle-container {
+    position: absolute;
+    top: 25%; left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+}
+
+.candle { width: 12px; height: 50px; background: #eee; border-radius: 3px; position: relative; }
+.wick { width: 2px; height: 10px; background: #222; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); }
+
+.flame {
+    width: 16px; height: 26px;
+    background: linear-gradient(to bottom, #fff, #ff8c00, #f00);
+    border-radius: 50% 50% 35% 35%;
+    position: absolute;
+    top: -32px; left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    box-shadow: 0 0 20px #ff8c00;
+}
+
+.flame.lit { opacity: 1; animation: flicker 0.1s infinite alternate; }
+
+@keyframes flicker {
+    from { transform: translateX(-50%) scale(1); }
+    to { transform: translateX(-50%) scale(1.1); }
+}
+
+/* --- GIFT BUTTON & CONFETTI --- */
+.other_gift { margin: 60px 0; }
+
+.confetti-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.confetti {
+    position: absolute;
+    width: 10px; height: 10px;
+    top: -10px;
+    animation: confetti-fall 3s linear forwards;
+}
+
+@keyframes confetti-fall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* --- MOBILE FIX --- */
+@media (max-width: 768px) {
+    .big-text { font-size: 1.8rem; }
+    .tulip_flower { width: 200px; height: 220px; }
+    .container-cake { width: 220px; height: 220px; }
+}
+/* ==========================================
+   RESPONSIVE FORMS & MODALS (The Cards)
+   ========================================== */
+
+.screen-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(152, 114, 255, 0.95); /* Slightly more solid for focus */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000; /* Higher than everything else */
+    padding: 20px; /* Space around the card on mobile */
+}
+
+.card {
+    text-align: center;
+    padding: 30px 20px;
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    
+    /* RESPONSIVE WIDTH */
+    width: 95%;      /* Takes up most of the screen on small phones */
+    max-width: 400px; /* Won't get too big on laptops */
+    
+    color: #333;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Ensure the cat images don't break the card */
+.card img, .angry-cat-img {
+    max-width: 180px; /* Limits size on mobile */
+    width: 100%;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.card h2, .card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+
+/* --- RESPONSIVE BUTTONS --- */
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap; /* Allows buttons to stack vertically on tiny screens */
+}
+
+.btn-yes, .btn-no, .btn-retry {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 50px;
+    font-family: inherit;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: 0.3s;
+    background-color: #9c38ff;
+    color: white;
+    
+    /* Make buttons wider on mobile so they are easy to tap */
+    min-width: 120px;
+}
+
+/* On very small phones, stack the buttons */
+@media (max-width: 380px) {
+    .button-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .btn-yes, .btn-no, .btn-retry {
+        width: 100%;
+    }
+}
+
+/* Ensure the main gift card matches */
+.gift-card {
+    border: 5px solid #cb72ff !important;
+}

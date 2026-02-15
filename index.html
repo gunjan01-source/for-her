@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main | Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<header>
+    <!-- Loading page -->
+    <div id="loading-page">
+        <div class="loader-content">
+            <div class="loading-text">
+                Getting the page readyyyyy....get yourself ready gurll
+            </div>
+            <span class="dot-loader">. . .</span>
+        </div>
+    </div>
+
+    <!-- Choice screen -->
+    <div id="choice-screen" class="screen-overlay" style="display: none;">
+        <div class="card">
+            <img src="happy cat.png" alt="Happy Cat" class="angry-cat-img">
+            <h2>Are you ready for your surprise?</h2>
+            <div class="button-group">
+                <button onclick="goToMain()" class="btn-yes">Yes!</button>
+                <button onclick="showAngryCat()" class="btn-no">Not yet...</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Angry cat screen -->
+    <div id="angry-cat-screen" class="screen-overlay" style="display: none;">
+        <div class="card">
+            <img src="angry cat.png" alt="Angry Cat" class="angry-cat-img">
+            <h3>Wrong answer! Hmph.</h3>
+            <button onclick="backToChoice()" class="btn-retry">
+                I'm ready now!
+            </button>
+        </div>
+    </div>
+</header>
+
+<main id="main-content" style="display: none;">
+
+    <!-- SECTION 1: Text and Tulip -->
+    <div class="heading_tulip_box">
+        <div class="heading">
+            <p class="big-text">HAPPY BIRTHDAY GURLLL !!!!!!</p>
+            <p class="small-text">with extra exclimintaion marks ᓚᘏᗢ</p>
+        </div>
+
+        <div class="celebration">
+            <div class="tulip_flower">
+                <p>digital tulip for you &gt;_&lt;</p>
+            </div>
+        </div>
+    </div> <!-- Close this box before starting the cake -->
+
+    <!-- SECTION 2: The Cake -->
+    <section class="cake-area">
+        <div class="container-cake">
+            <div class="candle-container" id="candle-click-target">
+                <div class="candle">
+                    <div class="wick"></div>
+                    <div class="flame" id="flame"></div>
+                </div>
+            </div>
+        </div>
+        <p class="instruction-text">Tap on candle to light up</p>
+    </section>
+
+    <!-- SECTION 3: The Gift Button -->
+    <div class="other_gift">
+        <div class="gift-container">
+            <button onclick="openGiftModal()" class="btn-main-gift">
+                CLICK FOR YOUR GIFT GURL !!!!
+            </button>
+        </div>
+    </div>
+
+    <div id="confetti-container" class="confetti-container"></div>
+</main>
+
+<!-- Gift modal -->
+<div id="gift-modal" class="screen-overlay" style="display: none;">
+    <div class="card gift-card">
+        <img src="anotherhappycat.png" alt="Happy Cat" class="angry-cat-img">
+        <h2>Ready for the REAL surprise?</h2>
+        <p>No turning back now...</p>
+        <div class="button-group">
+            <button onclick="goToGift()" class="btn-yes">YESSS!</button>
+            <button onclick="showAngryGiftCat()" class="btn-no">No</button>
+        </div>
+    </div>
+</div>
+
+<!-- Angry gift screen -->
+<div id="angry-gift-screen" class="screen-overlay" style="display: none;">
+    <div class="card gift-card-error">
+        <img src="confcat.png" alt="Angry Cat" class="angry-cat-img">
+        <h3 style="color: rgb(255, 133, 190);">ERROR: WRONG CHOICE!</h3>
+        <p style="color: rgb(255, 119, 162);">You really tried to say no?</p>
+        <button onclick="backToGiftChoice()" class="btn-retry">
+            My bad, take me back!
+        </button>
+    </div>
+</div>
+<div id="confetti-container" class="confetti-container"></div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

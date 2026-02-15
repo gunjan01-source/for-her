@@ -1,0 +1,155 @@
+body {
+    background-color: #efc7ff;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+    color: white;
+    overflow-x: hidden;
+}
+
+.booth-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 20px;
+    max-width: 1200px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* --- SIDEBAR (STICKER TRAY) --- */
+.sidebar {
+    width: 240px;
+    background: rgb(204, 150, 255);
+    border-radius: 20px;
+    padding: 15px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.sidebar h3 { margin: 0 0 10px 0; color: #9c38ff; text-align: center; }
+.sidebar h4 { font-size: 0.9rem; margin: 15px 0 10px 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px; }
+
+.scroll-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Custom Scrollbar */
+.scroll-area::-webkit-scrollbar { width: 5px; }
+.scroll-area::-webkit-scrollbar-thumb { background: #9872ff; border-radius: 10px; }
+
+.color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.color-opt { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid white; }
+
+.sticker-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding-bottom: 20px;
+}
+
+.sticker-source { width: 100%; cursor: grab; transition: transform 0.2s; }
+.sticker-source:active { cursor: grabbing; }
+
+/* --- CAMERA AREA --- */
+.camera-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.video-wrap {
+    position: relative;
+    width: 400px;
+    height: 300px;
+    background: black;
+    border-radius: 10px;
+    border: 4px solid #333;
+    overflow: hidden;
+}
+
+#webcam { width: 100%; height: 100%; transform: scaleX(-1); }
+
+#countdown-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 100px;
+    font-weight: bold;
+    color: white;
+}
+
+#snap-btn, .btn-download {
+    width: 100%;
+    margin-top: 15px;
+    padding: 15px;
+    background: #cb72ff;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-download { background: white; color: #9c38ff; border: 2px solid #9c38ff; }
+
+/* --- THE STRIP --- */
+.strip-outer {
+    position: relative;
+    width: 180px;
+    background-color: white;
+    padding: 15px;
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.2);
+}
+
+.photo-slots { display: flex; flex-direction: column; gap: 8px; }
+.slot { width: 100%; height: 120px; background: #222; overflow: hidden; }
+.slot img { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+.strip-footer { text-align: center; color: #333; margin-top: 10px; font-weight: bold; font-size: 18px; }
+
+.placed-sticker {
+    position: absolute;
+    width: 50px;
+    cursor: move;
+    z-index: 100;
+    touch-action: none; /* Critical for mobile dragging */
+}
+
+/* ==========================================
+   MOBILE RESPONSIVENESS
+   ========================================== */
+@media (max-width: 950px) {
+    .booth-wrapper {
+        flex-direction: column;
+        align-items: center;
+        padding-top: 20px;
+    }
+
+    .video-wrap {
+        width: 90vw;
+        max-width: 400px;
+        height: auto;
+        aspect-ratio: 4/3;
+    }
+
+    .sidebar {
+        width: 90vw;
+        height: 250px; /* Smaller height on mobile */
+        order: 3; /* Move stickers to the bottom */
+    }
+
+    .sticker-grid {
+        grid-template-columns: repeat(6, 1fr); /* More stickers in a row on mobile */
+    }
+
+    .camera-area { order: 1; }
+    .strip-outer { order: 2; margin: 20px 0; }
+}

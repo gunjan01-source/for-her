@@ -1,0 +1,144 @@
+/* Centers the entire container in the middle of the screen */
+.screen-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Your Main Box that holds the two small boxes */
+.main-gift-box {
+    display: flex;
+    flex-direction: row; /* THIS puts them side-by-side */
+    justify-content: center;
+    align-items: center;
+    gap: 50px; /* Space between the two boxes */
+    
+    /* Styling for the main box container */
+    padding: 50px;
+    border: 3px solid #ffb6c1; /* Light pink border */
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Individual box styling */
+.gift-item {
+    display: flex;
+    flex-direction: column; /* Keeps text under the image */
+    align-items: center;
+    text-align: center;
+}
+
+.gift-item img {
+    width: 200px; /* Adjust size as needed */
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.gift-item img:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.gift-item p {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #d81b60;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Ensure the link doesn't add a border or change layout */
+.gift-link {
+    text-decoration: none;
+    display: block; /* Makes the whole area of the link active */
+    transition: transform 0.3s ease;
+}
+
+/* Move the hover effect to the link wrapper for better performance */
+.gift-link:hover {
+    transform: scale(1.1) rotate(3deg);
+}
+
+.gift-item img {
+    width: 200px;
+    height: auto;
+    display: block; /* Removes tiny space below image */
+}
+
+/* The rest of your flexbox CSS from before stays exactly the same */
+.main-gift-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    padding: 50px;
+    border: 3px solid #ffb6c1;
+    border-radius: 20px;
+}
+
+/* --- Back Arrow Styling --- */
+.back-arrow {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-family: sans-serif;
+    font-weight: bold;
+    color: #d81b60;
+    z-index: 100;
+    transition: transform 0.2s ease;
+}
+
+.back-arrow:hover {
+    transform: translateX(-5px);
+}
+
+/* --- Main Layout --- */
+.screen-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.main-gift-box {
+    display: flex;
+    flex-direction: row; /* Default: Side-by-side */
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    padding: 40px;
+    border: 3px solid #ffb6c1;
+    border-radius: 20px;
+    background-color: white;
+    width: 100%;
+    max-width: 800px; /* Prevents it from getting too wide on desktop */
+}
+
+.gift-item img {
+    width: 100%;
+    max-width: 200px; /* Scales down on small screens */
+    height: auto;
+}
+
+/* --- Responsive Media Query --- */
+@media (max-width: 600px) {
+    .main-gift-box {
+        flex-direction: column; /* Stacks boxes vertically on phones */
+        gap: 30px;
+        padding: 20px;
+    }
+    
+    .gift-item img {
+        max-width: 150px; /* Smaller images for smaller screens */
+    }
+}

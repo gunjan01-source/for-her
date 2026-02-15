@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Soulmate!!</title>
+    <link rel="stylesheet" href="page2.css">
+</head>
+<body>
+    <!-- Intro Overlay (Click to start) -->
+    <div id="intro-overlay" onclick="revealSite()">
+        <img id="music-disc" src="music.png" alt="Music Disc">
+        <p>Tap the spinning disc to start our song!</p> 
+    </div>
+
+    <main id="main-content">
+        <a href="letter.html" class="back-arrow">← Back to Letter</a>
+        
+        <!-- Lyrics on the right side -->
+        <div id="lyrics-container">
+            <p id="current-lyric"></p>
+            
+            <!-- This button only shows up when the song ends (as a bonus) -->
+            <div id="next-step-container" style="display: none; margin-top: 20px;">
+                <p style="font-size: 0.9em;">Did you think the surprise was over? ..no</p>
+                <button onclick="window.location.href='memories.html'" class="btn-main-gift">
+                    SEE OUR MEMORIES? ✨
+                </button>
+            </div>
+        </div>
+
+        <!-- NEW: Photobooth Button (Visible from the start) -->
+        <div id="booth-btn-container">
+            <button onclick="window.location.href='photobooth.html'" class="corner-btn">
+                Step into the Dressing Room 📸
+            </button>
+        </div>
+    </main>
+
+    <!-- The Song -->
+    <audio id="bday-song">
+        <source src="K. - Cigarettes After Sex.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
