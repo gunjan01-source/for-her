@@ -23,11 +23,28 @@ window.addEventListener('load', () => {
         }
     } else {
         // First time load: Show choice screen after 2 seconds of loading
-        setTimeout(() => {
-            if (loadingPage) loadingPage.style.display = 'none';
-            if (choiceScreen) choiceScreen.style.display = 'flex';
-        }, 2000);
+       // Instead of a fixed 2 seconds, we wait for the main images
+window.addEventListener('load', () => {
+    const loadingPage = document.getElementById('loading-page');
+    const choiceScreen = document.getElementById('choice-screen');
+    
+    // Check session storage first
+    if (sessionStorage.getItem('mainStarted') === 'true') {
+        if (loadingPage) loadingPage.style.display = 'none';
+        // ... rest of your code
+    } else {
+        // Hide loader and show choice ONLY when the full page is ready
+        if (loadingPage) {
+            setTimeout(() => {
+                loadingPage.style.opacity = '0';
+                setTimeout(() => {
+                    loadingPage.style.display = 'none';
+                    if (choiceScreen) choiceScreen.style.display = 'flex';
+                }, 500);
+            }, 1500); // Gives it a nice smooth fade out
+        }
     }
+});
 });
 
 /**
@@ -404,3 +421,4 @@ function preloadStickers() {
 
 // Start preloading immediately when index.html opens
 preloadStickers();
+
