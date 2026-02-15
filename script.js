@@ -381,4 +381,26 @@ window.downloadStrip = function() {
         link.href = canvas.toDataURL('image/png');
         link.click();
     });
+
 };
+
+// --- IMAGE PRELOADER ---
+const stickers = [
+    'lipstick.png', 'star.png', 'stemp.png', 'spiddy.png', 'redbow.png', 
+    'pinkbow.png', 'pinkstamp.png', 'orchite.png', 'flower.png', 'lotus.png', 
+    'purbow.png', 'purflow.png', 'purstamp.png', 'mulflow.png', 'yellow.png', 
+    'coco.png', 'shell.png', 'heart.png', 'moon.png', 'tusnami.png', 
+    'bluebarry.png', 'headset.png', 'bear.png', 'headcat.png', 'standcat.png', 
+    'fullmoon.png', 'whatever.png', 'turtle.png', 'clove.png', 'cat.png'
+];
+
+function preloadStickers() {
+    stickers.forEach(fileName => {
+        const img = new Image();
+        img.src = fileName; // This triggers the download in the background
+    });
+    console.log("Stickers preloading in background...");
+}
+
+// Start preloading immediately when index.html opens
+preloadStickers();
