@@ -1,35 +1,19 @@
-// ==========================================
-// 1. SILENT PRELOADER (Runs in background)
-// ==========================================
-const stickers = [
-    'lipstick.png', 'star.png', 'stemp.png', 'spiddy.png', 'redbow.png', 
-    'pinkbow.png', 'pinkstamp.png', 'orchite.png', 'flower.png', 'lotus.png', 
-    'purbow.png', 'purflow.png', 'purstamp.png', 'mulflow.png', 'yellow.png', 
-    'coco.png', 'shell.png', 'heart.png', 'moon.png', 'tusnami.png', 
-    'bluebarry.png', 'headset.png', 'bear.png', 'headcat.png', 'standcat.png', 
-    'fullmoon.png', 'whatever.png', 'turtle.png', 'clove.png', 'cat.png'
-];
-
-function preloadStickers() {
-    stickers.forEach(fileName => {
-        const img = new Image();
-        img.src = fileName; 
-    });
-}
-preloadStickers(); // Start downloading stickers immediately
-
-// ==========================================
-// 2. STATE PERSISTENCE & ORIGINAL LOADING
-// ==========================================
+/**
+ * 1. STATE PERSISTENCE & INITIAL LOAD
+ * Checks if she has already been here so we can skip the forms.
+ */
 window.addEventListener('load', () => {
     const loadingPage = document.getElementById('loading-page');
     const choiceScreen = document.getElementById('choice-screen');
     const mainContent = document.getElementById('main-content');
     const song = document.getElementById('bday-song');
 
-    if (song) { song.loop = false; }
+    // Ensure the song DOES NOT loop
+    if (song) {
+        song.loop = false; 
+    }
 
-    // Check if she already started the surprise
+    // Check if she already passed the "Are you ready?" screen in this session
     if (sessionStorage.getItem('mainStarted') === 'true') {
         if (loadingPage) loadingPage.style.display = 'none';
         if (choiceScreen) choiceScreen.style.display = 'none';
@@ -38,7 +22,7 @@ window.addEventListener('load', () => {
             mainContent.classList.add('show-layout');
         }
     } else {
-        // ORIGINAL LOGIC: Wait 2 seconds then show choice screen
+        // First time load: Show choice screen after 2 seconds of loading
         setTimeout(() => {
             if (loadingPage) loadingPage.style.display = 'none';
             if (choiceScreen) choiceScreen.style.display = 'flex';
@@ -46,17 +30,20 @@ window.addEventListener('load', () => {
     }
 });
 
-// ==========================================
-// 3. NAVIGATION FUNCTIONS
-// ==========================================
+/**
+ * 2. NAVIGATION & CHOICE SCREEN FUNCTIONS
+ * These are global so your HTML buttons can always find them.
+ */
 
+// First "Are you ready?" button
 window.goToMain = function () {
     sessionStorage.setItem('mainStarted', 'true');
     const choiceScreen = document.getElementById('choice-screen');
     const mainContent = document.getElementById('main-content');
+    
     if (choiceScreen) choiceScreen.style.display = 'none';
     if (mainContent) {
-        mainContent.style.display = "flex";
+        mainContent.style.display = "flex"; // Changed to flex for your layout fix
         mainContent.classList.add('show-layout');
     }
 };
@@ -71,7 +58,10 @@ window.backToChoice = function () {
     document.getElementById('choice-screen').style.display = 'flex';
 };
 
+// --- Gift Modal Functions ---
+
 window.openGiftModal = function () {
+    // If she already agreed once, go straight to the next page
     if (sessionStorage.getItem('giftPassed') === 'true') {
         window.location.href = 'details.html';
     } else {
@@ -95,14 +85,15 @@ window.goToGift = function () {
     window.location.href = 'details.html';
 };
 
-// ==========================================
-// 4. INTERACTIVE ELEMENTS (CANDLE / CONFETTI / SPARKLES)
-// ==========================================
+/**
+ * 3. INTERACTIVE PAGE ELEMENTS
+ * Candle, Confetti, and Cursor Sparkles
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const candle = document.getElementById('candle-click-target');
     const flame = document.getElementById('flame');
-    let isLit = false;
 
+    let isLit = false;
     if (candle && flame) {
         candle.addEventListener('click', () => {
             if (!isLit) {
@@ -132,6 +123,7 @@ function launchConfetti() {
     }
 }
 
+// Sparkle cursor effect (the pink hearts)
 document.addEventListener('mousemove', (e) => {
     const sparkle = document.createElement('div');
     sparkle.innerHTML = '💗';
@@ -141,10 +133,10 @@ document.addEventListener('mousemove', (e) => {
     setTimeout(() => sparkle.remove(), 800);
 });
 
-// ==========================================
-// 5. LETTER & TYPEWRITER
-// ==========================================
-const bdayMessage = "Saba, \n\nHappy Birthday! I wanted to make you something special because you deserve the world. \n\nI hope today is as wonderful as your smile. \n\nyour bestie, \nhehe ♥";
+/**
+ * 4. BIRTHDAY LETTER & TYPEWRITER
+ */
+const bdayMessage = "Saba, \n\nHappy Birthday! I wanted to make you something special because you deserve the world. \n\nI hope i have put smile on your face. \n\nyour bestie, \nhehe ♥";
 let typeIndex = 0;
 let isLetterOpened = false;
 
@@ -165,8 +157,39 @@ function startTyping() {
     }
 }
 
+/**
+ * 5. SONG REVEAL & LYRICS SYNC
+ */
 // ==========================================
-// 6. LYRICS SYNC DATA
+// 1. REVEAL SITE & SONG LOGIC
+// ==========================================
+window.revealSite = function() {
+    const overlay = document.getElementById('intro-overlay');
+    const mainContent = document.getElementById('main-content');
+    const song = document.getElementById('bday-song');
+    
+    if (overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(() => { 
+            overlay.style.display = 'none'; 
+            if (mainContent) mainContent.style.display = 'flex'; 
+        }, 800);
+    }
+    
+    if (song) {
+        song.play();
+        
+        // When the song ends, we still show the 'Memories' button 
+        // as an extra surprise under the lyrics!
+        song.onended = function() {
+            const nextStep = document.getElementById('next-step-container');
+            if (nextStep) nextStep.style.display = 'block';
+        };
+    }
+};
+
+// ==========================================
+// 2. LYRICS DATA
 // ==========================================
 const lyricsData = [
     [0.0, ""],
@@ -194,24 +217,6 @@ const lyricsData = [
     [280.0, "Happy Birthday, my soulmate!"]
 ];
 
-window.revealSite = function() {
-    const overlay = document.getElementById('intro-overlay');
-    const mainContent = document.getElementById('main-content');
-    const song = document.getElementById('bday-song');
-    
-    if (overlay) {
-        overlay.style.opacity = '0';
-        setTimeout(() => { 
-            overlay.style.display = 'none'; 
-            if (mainContent) mainContent.style.display = 'flex'; 
-        }, 800);
-    }
-    if (song) {
-        song.loop = false;
-        song.play();
-    }
-};
-
 function syncLyrics() {
     const song = document.getElementById('bday-song');
     const lyricElement = document.getElementById('current-lyric');
@@ -233,61 +238,44 @@ function syncLyrics() {
     }
 }
 
+// Attach listener to the audio
 const audioNode = document.getElementById('bday-song');
-if (audioNode) { audioNode.addEventListener('timeupdate', syncLyrics); }
+if (audioNode) {
+    audioNode.addEventListener('timeupdate', syncLyrics);
+}
+// Attach sync function to audio
+const bdaySong = document.getElementById('bday-song');
+if (bdaySong) {
+    bdaySong.addEventListener('timeupdate', syncLyrics);
+}
 
 const video = document.getElementById('webcam');
 const canvas = document.getElementById('hidden-canvas');
 const snapBtn = document.getElementById('snap-btn');
 const countdownEl = document.getElementById('countdown-text');
 const strip = document.getElementById('main-strip');
-const saveContainer = document.getElementById('save-container');
+const finalStep = document.getElementById('final-step-container');
 
-// ==========================================
-// 1. WEBCAM SETUP
-// ==========================================
-navigator.mediaDevices.getUserMedia({ 
-    video: { 
-        width: { ideal: 1280 },
-        height: { ideal: 720 },
-        facingMode: "user" // Uses front camera on phones
-    } 
-})
-.then(stream => { 
-    video.srcObject = stream; 
-})
-.catch(err => {
-    console.error("Camera Error: ", err);
-    alert("Please enable camera access in your browser settings to take photos! ✨");
-});
+// 1. START WEBCAM
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => { video.srcObject = stream; })
 
-// ==========================================
-// 2. CARD COLOR LOGIC
-// ==========================================
+// 2. CHANGE CARD COLOR
 window.setCardColor = function(color) {
     strip.style.backgroundColor = color;
-    // Contrast check: if background is very dark, make text white
     const footer = document.querySelector('.strip-footer');
-    if (color === '#1a1a1a' || color === '#4b0505') {
-        footer.style.color = "white";
-    } else {
-        footer.style.color = "#333";
-    }
+    footer.style.color = (color === '#1a1a1a' || color === '#4b0505') ? "white" : "#333";
 };
 
-// ==========================================
-// 3. CAPTURE SESSION (THE 4 SHOTS)
-// ==========================================
+// 3. CAPTURE SESSION
 snapBtn.addEventListener('click', async () => {
-    snapBtn.style.display = 'none'; // Hide button once started
-    
+    snapBtn.style.display = 'none';
     for (let i = 1; i <= 4; i++) {
-        await runCountdown(3); // 3 second wait
+        await runCountdown(3);
         takePhoto(i);
     }
-    
-    alert("Looking cute! Now drag some stickers on to decorate! ✨");
-    saveContainer.style.display = 'block'; // Show the Save button
+    alert("Strip complete! Decorate it with stickers! ✨");
+    finalStep.style.display = 'block';
 });
 
 function runCountdown(sec) {
@@ -296,37 +284,22 @@ function runCountdown(sec) {
         countdownEl.innerText = count;
         let timer = setInterval(() => {
             count--;
-            if (count > 0) {
-                countdownEl.innerText = count;
-            } else {
-                clearInterval(timer);
-                countdownEl.innerText = "";
-                resolve();
-            }
+            if (count > 0) countdownEl.innerText = count;
+            else { clearInterval(timer); countdownEl.innerText = ""; resolve(); }
         }, 1000);
     });
 }
 
 function takePhoto(id) {
     const ctx = canvas.getContext('2d');
-    // Match canvas size to video stream
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    
-    // Draw the current video frame to the canvas
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-    // Convert canvas to image and put in the slot
+    ctx.drawImage(video, 0, 0);
     const data = canvas.toDataURL('image/png');
-    const slot = document.getElementById(`slot-${id}`);
-    slot.innerHTML = `<img src="${data}" style="width:100%; height:100%; object-fit:cover; transform: scaleX(-1);">`;
+    document.getElementById(`slot-${id}`).innerHTML = `<img src="${data}">`;
 }
 
-// ==========================================
-// 4. STICKER ENGINE (Drag/Drop & Touch)
-// ==========================================
-
-// Desktop Drag and Drop
+// 4. DRAG AND DROP (Desktop & Mobile Touch)
 window.allowDrop = (ev) => ev.preventDefault();
 window.drag = (ev) => ev.dataTransfer.setData("src", ev.target.src);
 
@@ -336,63 +309,60 @@ window.drop = (ev) => {
     addStickerToStrip(src, ev.clientX, ev.clientY);
 };
 
-// Mobile Support: Tap to add (if dragging is hard)
+// Mobile Fallback: If they TAP a sticker, it adds to the center
 document.querySelectorAll('.sticker-source').forEach(sticker => {
     sticker.addEventListener('click', (e) => {
-        if (window.innerWidth < 950) { // Only on mobile
+        // Only trigger click-to-add if on a small screen
+        if (window.innerWidth < 950) {
             const rect = strip.getBoundingClientRect();
-            // Add to center of strip
             addStickerToStrip(e.target.src, rect.left + rect.width/2, rect.top + rect.height/2);
         }
     });
 });
 
-function addStickerToStrip(src, x, y) {
+function addStickerToStrip(src, clientX, clientY) {
     const newSticker = document.createElement("img");
     newSticker.src = src;
     newSticker.className = "placed-sticker";
     
     const rect = strip.getBoundingClientRect();
-    // Position it where dropped (minus 25px to center the 50px sticker)
-    newSticker.style.left = (x - rect.left - 25) + "px";
-    newSticker.style.top = (y - rect.top - 25) + "px";
+    newSticker.style.left = (clientX - rect.left - 25) + "px";
+    newSticker.style.top = (clientY - rect.top - 25) + "px";
     
-    makeStickerDraggable(newSticker);
+    makeElementDraggable(newSticker);
     strip.appendChild(newSticker);
 }
 
-// DRAGGING LOGIC (Mouse & Finger)
-function makeStickerDraggable(el) {
+// TOUCH & MOUSE DRAGGING LOGIC
+function makeElementDraggable(el) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
-    el.onmousedown = startDragging;
-    el.ontouchstart = startDragging;
+    el.onmousedown = dragMouseDown;
+    el.ontouchstart = dragMouseDown;
 
-    function startDragging(e) {
+    function dragMouseDown(e) {
         e.preventDefault();
         const event = e.type === 'touchstart' ? e.touches[0] : e;
         pos3 = event.clientX;
         pos4 = event.clientY;
-        
-        document.onmouseup = stopDragging;
-        document.ontouchend = stopDragging;
-        document.onmousemove = dragElement;
-        document.ontouchmove = dragElement;
+        document.onmouseup = closeDragElement;
+        document.ontouchend = closeDragElement;
+        document.onmousemove = elementDrag;
+        document.ontouchmove = elementDrag;
     }
 
-    function dragElement(e) {
+    function elementDrag(e) {
         e.preventDefault();
         const event = e.type === 'touchmove' ? e.touches[0] : e;
         pos1 = pos3 - event.clientX;
         pos2 = pos4 - event.clientY;
         pos3 = event.clientX;
         pos4 = event.clientY;
-        
         el.style.top = (el.offsetTop - pos2) + "px";
         el.style.left = (el.offsetLeft - pos1) + "px";
     }
 
-    function stopDragging() {
+    function closeDragElement() {
         document.onmouseup = null;
         document.onmousemove = null;
         document.ontouchend = null;
@@ -400,22 +370,33 @@ function makeStickerDraggable(el) {
     }
 }
 
-// ==========================================
-// 5. DOWNLOAD STRIP
-// ==========================================
+// 5. DOWNLOAD FEATURE
 window.downloadStrip = function() {
-    const btn = document.querySelector('.btn-download');
-    btn.innerText = "Processing... ⏳";
-
     html2canvas(strip, {
-        useCORS: true, // Allows stickers from other folders/links
-        scale: 3,      // High resolution
-        backgroundColor: null
+        useCORS: true,
+        scale: 2 // Higher quality download
     }).then(canvas => {
         const link = document.createElement('a');
-        link.download = 'Saba-Bday-Strip.png';
+        link.download = 'My-Girly-Pop-Strip.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
-        btn.innerText = "SAVE PHOTO 💾";
     });
 };
+};
+
+const stickers = [
+    'lipstick.png', 'star.png', 'stemp.png', 'spiddy.png', 'redbow.png', 
+    'pinkbow.png', 'pinkstamp.png', 'orchite.png', 'flower.png', 'lotus.png', 
+    'purbow.png', 'purflow.png', 'purstamp.png', 'mulflow.png', 'yellow.png', 
+    'coco.png', 'shell.png', 'heart.png', 'moon.png', 'tusnami.png', 
+    'bluebarry.png', 'headset.png', 'bear.png', 'headcat.png', 'standcat.png', 
+    'fullmoon.png', 'whatever.png', 'turtle.png', 'clove.png', 'cat.png'
+];
+
+function preloadStickers() {
+    stickers.forEach(fileName => {
+        const img = new Image();
+        img.src = fileName; 
+    });
+}
+preloadStickers();
