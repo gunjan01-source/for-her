@@ -155,7 +155,7 @@ document.addEventListener('mousemove', (e) => {
 // ==========================================
 // 5. LETTER & LYRICS
 // ==========================================
-const bdayMessage = "Saba, \n\nHappy Birthday! I wanted to make you something special because you deserve the world. \n\nI hope today is as wonderful as your smile. \n\nyour bestie, \nhehe ♥";
+const bdayMessage = "Saba, \n\nHappy Birthday! I wanted to make you something special because you deserve the world. \n\nyour bestie, \nhehe ♥";
 let typeIndex = 0;
 let isLetterOpened = false;
 
@@ -373,6 +373,7 @@ window.downloadStrip = function() {
         link.click();
     });
 };
+
 
 
 
