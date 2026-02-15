@@ -47,7 +47,7 @@ function startSurprise() {
                     if (choiceScreen) choiceScreen.style.display = 'flex';
                 }, 500);
             }
-        }, 2500);
+        }, 1000);
     }
 }
 
@@ -352,3 +352,4 @@ window.downloadStrip = function() {
         link.click();
     });
 };
+
