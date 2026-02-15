@@ -54,7 +54,7 @@ body {
     font-size: 3em;
     font-weight: bold;
     width: 3ch; /* Sets width exactly to 3 characters/dots */
-    overflow: hidden;
+    /* overflow: hidden; */
     white-space: nowrap;
     animation: typing-dots 1.5s steps(3) infinite;
     text-align: left;
@@ -293,3 +293,4 @@ body {
     border: 5px solid #cb72ff !important;
 
 }
+
