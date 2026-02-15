@@ -236,3 +236,186 @@ function syncLyrics() {
 const audioNode = document.getElementById('bday-song');
 if (audioNode) { audioNode.addEventListener('timeupdate', syncLyrics); }
 
+const video = document.getElementById('webcam');
+const canvas = document.getElementById('hidden-canvas');
+const snapBtn = document.getElementById('snap-btn');
+const countdownEl = document.getElementById('countdown-text');
+const strip = document.getElementById('main-strip');
+const saveContainer = document.getElementById('save-container');
+
+// ==========================================
+// 1. WEBCAM SETUP
+// ==========================================
+navigator.mediaDevices.getUserMedia({ 
+    video: { 
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+        facingMode: "user" // Uses front camera on phones
+    } 
+})
+.then(stream => { 
+    video.srcObject = stream; 
+})
+.catch(err => {
+    console.error("Camera Error: ", err);
+    alert("Please enable camera access in your browser settings to take photos! ✨");
+});
+
+// ==========================================
+// 2. CARD COLOR LOGIC
+// ==========================================
+window.setCardColor = function(color) {
+    strip.style.backgroundColor = color;
+    // Contrast check: if background is very dark, make text white
+    const footer = document.querySelector('.strip-footer');
+    if (color === '#1a1a1a' || color === '#4b0505') {
+        footer.style.color = "white";
+    } else {
+        footer.style.color = "#333";
+    }
+};
+
+// ==========================================
+// 3. CAPTURE SESSION (THE 4 SHOTS)
+// ==========================================
+snapBtn.addEventListener('click', async () => {
+    snapBtn.style.display = 'none'; // Hide button once started
+    
+    for (let i = 1; i <= 4; i++) {
+        await runCountdown(3); // 3 second wait
+        takePhoto(i);
+    }
+    
+    alert("Looking cute! Now drag some stickers on to decorate! ✨");
+    saveContainer.style.display = 'block'; // Show the Save button
+});
+
+function runCountdown(sec) {
+    return new Promise(resolve => {
+        let count = sec;
+        countdownEl.innerText = count;
+        let timer = setInterval(() => {
+            count--;
+            if (count > 0) {
+                countdownEl.innerText = count;
+            } else {
+                clearInterval(timer);
+                countdownEl.innerText = "";
+                resolve();
+            }
+        }, 1000);
+    });
+}
+
+function takePhoto(id) {
+    const ctx = canvas.getContext('2d');
+    // Match canvas size to video stream
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    // Draw the current video frame to the canvas
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Convert canvas to image and put in the slot
+    const data = canvas.toDataURL('image/png');
+    const slot = document.getElementById(`slot-${id}`);
+    slot.innerHTML = `<img src="${data}" style="width:100%; height:100%; object-fit:cover; transform: scaleX(-1);">`;
+}
+
+// ==========================================
+// 4. STICKER ENGINE (Drag/Drop & Touch)
+// ==========================================
+
+// Desktop Drag and Drop
+window.allowDrop = (ev) => ev.preventDefault();
+window.drag = (ev) => ev.dataTransfer.setData("src", ev.target.src);
+
+window.drop = (ev) => {
+    ev.preventDefault();
+    const src = ev.dataTransfer.getData("src");
+    addStickerToStrip(src, ev.clientX, ev.clientY);
+};
+
+// Mobile Support: Tap to add (if dragging is hard)
+document.querySelectorAll('.sticker-source').forEach(sticker => {
+    sticker.addEventListener('click', (e) => {
+        if (window.innerWidth < 950) { // Only on mobile
+            const rect = strip.getBoundingClientRect();
+            // Add to center of strip
+            addStickerToStrip(e.target.src, rect.left + rect.width/2, rect.top + rect.height/2);
+        }
+    });
+});
+
+function addStickerToStrip(src, x, y) {
+    const newSticker = document.createElement("img");
+    newSticker.src = src;
+    newSticker.className = "placed-sticker";
+    
+    const rect = strip.getBoundingClientRect();
+    // Position it where dropped (minus 25px to center the 50px sticker)
+    newSticker.style.left = (x - rect.left - 25) + "px";
+    newSticker.style.top = (y - rect.top - 25) + "px";
+    
+    makeStickerDraggable(newSticker);
+    strip.appendChild(newSticker);
+}
+
+// DRAGGING LOGIC (Mouse & Finger)
+function makeStickerDraggable(el) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    el.onmousedown = startDragging;
+    el.ontouchstart = startDragging;
+
+    function startDragging(e) {
+        e.preventDefault();
+        const event = e.type === 'touchstart' ? e.touches[0] : e;
+        pos3 = event.clientX;
+        pos4 = event.clientY;
+        
+        document.onmouseup = stopDragging;
+        document.ontouchend = stopDragging;
+        document.onmousemove = dragElement;
+        document.ontouchmove = dragElement;
+    }
+
+    function dragElement(e) {
+        e.preventDefault();
+        const event = e.type === 'touchmove' ? e.touches[0] : e;
+        pos1 = pos3 - event.clientX;
+        pos2 = pos4 - event.clientY;
+        pos3 = event.clientX;
+        pos4 = event.clientY;
+        
+        el.style.top = (el.offsetTop - pos2) + "px";
+        el.style.left = (el.offsetLeft - pos1) + "px";
+    }
+
+    function stopDragging() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+        document.ontouchend = null;
+        document.ontouchmove = null;
+    }
+}
+
+// ==========================================
+// 5. DOWNLOAD STRIP
+// ==========================================
+window.downloadStrip = function() {
+    const btn = document.querySelector('.btn-download');
+    btn.innerText = "Processing... ⏳";
+
+    html2canvas(strip, {
+        useCORS: true, // Allows stickers from other folders/links
+        scale: 3,      // High resolution
+        backgroundColor: null
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'Saba-Bday-Strip.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        btn.innerText = "SAVE PHOTO 💾";
+    });
+};
