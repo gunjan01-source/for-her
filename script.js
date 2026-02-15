@@ -1,19 +1,35 @@
-/**
- * 1. STATE PERSISTENCE & INITIAL LOAD
- * Checks if she has already been here so we can skip the forms.
- */
+// ==========================================
+// 1. SILENT PRELOADER (Runs in background)
+// ==========================================
+const stickers = [
+    'lipstick.png', 'star.png', 'stemp.png', 'spiddy.png', 'redbow.png', 
+    'pinkbow.png', 'pinkstamp.png', 'orchite.png', 'flower.png', 'lotus.png', 
+    'purbow.png', 'purflow.png', 'purstamp.png', 'mulflow.png', 'yellow.png', 
+    'coco.png', 'shell.png', 'heart.png', 'moon.png', 'tusnami.png', 
+    'bluebarry.png', 'headset.png', 'bear.png', 'headcat.png', 'standcat.png', 
+    'fullmoon.png', 'whatever.png', 'turtle.png', 'clove.png', 'cat.png'
+];
+
+function preloadStickers() {
+    stickers.forEach(fileName => {
+        const img = new Image();
+        img.src = fileName; 
+    });
+}
+preloadStickers(); // Start downloading stickers immediately
+
+// ==========================================
+// 2. STATE PERSISTENCE & ORIGINAL LOADING
+// ==========================================
 window.addEventListener('load', () => {
     const loadingPage = document.getElementById('loading-page');
     const choiceScreen = document.getElementById('choice-screen');
     const mainContent = document.getElementById('main-content');
     const song = document.getElementById('bday-song');
 
-    // Ensure the song DOES NOT loop
-    if (song) {
-        song.loop = false; 
-    }
+    if (song) { song.loop = false; }
 
-    // Check if she already passed the "Are you ready?" screen in this session
+    // Check if she already started the surprise
     if (sessionStorage.getItem('mainStarted') === 'true') {
         if (loadingPage) loadingPage.style.display = 'none';
         if (choiceScreen) choiceScreen.style.display = 'none';
@@ -22,45 +38,25 @@ window.addEventListener('load', () => {
             mainContent.classList.add('show-layout');
         }
     } else {
-        // First time load: Show choice screen after 2 seconds of loading
-       // Instead of a fixed 2 seconds, we wait for the main images
-window.addEventListener('load', () => {
-    const loadingPage = document.getElementById('loading-page');
-    const choiceScreen = document.getElementById('choice-screen');
-    
-    // Check session storage first
-    if (sessionStorage.getItem('mainStarted') === 'true') {
-        if (loadingPage) loadingPage.style.display = 'none';
-        // ... rest of your code
-    } else {
-        // Hide loader and show choice ONLY when the full page is ready
-        if (loadingPage) {
-            setTimeout(() => {
-                loadingPage.style.opacity = '0';
-                setTimeout(() => {
-                    loadingPage.style.display = 'none';
-                    if (choiceScreen) choiceScreen.style.display = 'flex';
-                }, 500);
-            }, 1500); // Gives it a nice smooth fade out
-        }
+        // ORIGINAL LOGIC: Wait 2 seconds then show choice screen
+        setTimeout(() => {
+            if (loadingPage) loadingPage.style.display = 'none';
+            if (choiceScreen) choiceScreen.style.display = 'flex';
+        }, 2000);
     }
 });
-});
 
-/**
- * 2. NAVIGATION & CHOICE SCREEN FUNCTIONS
- * These are global so your HTML buttons can always find them.
- */
+// ==========================================
+// 3. NAVIGATION FUNCTIONS
+// ==========================================
 
-// First "Are you ready?" button
 window.goToMain = function () {
     sessionStorage.setItem('mainStarted', 'true');
     const choiceScreen = document.getElementById('choice-screen');
     const mainContent = document.getElementById('main-content');
-    
     if (choiceScreen) choiceScreen.style.display = 'none';
     if (mainContent) {
-        mainContent.style.display = "flex"; // Changed to flex for your layout fix
+        mainContent.style.display = "flex";
         mainContent.classList.add('show-layout');
     }
 };
@@ -75,10 +71,7 @@ window.backToChoice = function () {
     document.getElementById('choice-screen').style.display = 'flex';
 };
 
-// --- Gift Modal Functions ---
-
 window.openGiftModal = function () {
-    // If she already agreed once, go straight to the next page
     if (sessionStorage.getItem('giftPassed') === 'true') {
         window.location.href = 'details.html';
     } else {
@@ -102,15 +95,14 @@ window.goToGift = function () {
     window.location.href = 'details.html';
 };
 
-/**
- * 3. INTERACTIVE PAGE ELEMENTS
- * Candle, Confetti, and Cursor Sparkles
- */
+// ==========================================
+// 4. INTERACTIVE ELEMENTS (CANDLE / CONFETTI / SPARKLES)
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const candle = document.getElementById('candle-click-target');
     const flame = document.getElementById('flame');
-
     let isLit = false;
+
     if (candle && flame) {
         candle.addEventListener('click', () => {
             if (!isLit) {
@@ -140,7 +132,6 @@ function launchConfetti() {
     }
 }
 
-// Sparkle cursor effect (the pink hearts)
 document.addEventListener('mousemove', (e) => {
     const sparkle = document.createElement('div');
     sparkle.innerHTML = '💗';
@@ -150,10 +141,10 @@ document.addEventListener('mousemove', (e) => {
     setTimeout(() => sparkle.remove(), 800);
 });
 
-/**
- * 4. BIRTHDAY LETTER & TYPEWRITER
- */
-const bdayMessage = "Saba, \n\nHappy Birthday! I wanted to make you something special because you deserve the world. \n\nI hope i have put smile on your face. \n\nyour bestie, \nhehe ♥";
+// ==========================================
+// 5. LETTER & TYPEWRITER
+// ==========================================
+const bdayMessage = "Saba, \n\nHappy Birthday! I wanted to make you something special because you deserve the world. \n\nI hope today is as wonderful as your smile. \n\nyour bestie, \nhehe ♥";
 let typeIndex = 0;
 let isLetterOpened = false;
 
@@ -174,39 +165,8 @@ function startTyping() {
     }
 }
 
-/**
- * 5. SONG REVEAL & LYRICS SYNC
- */
 // ==========================================
-// 1. REVEAL SITE & SONG LOGIC
-// ==========================================
-window.revealSite = function() {
-    const overlay = document.getElementById('intro-overlay');
-    const mainContent = document.getElementById('main-content');
-    const song = document.getElementById('bday-song');
-    
-    if (overlay) {
-        overlay.style.opacity = '0';
-        setTimeout(() => { 
-            overlay.style.display = 'none'; 
-            if (mainContent) mainContent.style.display = 'flex'; 
-        }, 800);
-    }
-    
-    if (song) {
-        song.play();
-        
-        // When the song ends, we still show the 'Memories' button 
-        // as an extra surprise under the lyrics!
-        song.onended = function() {
-            const nextStep = document.getElementById('next-step-container');
-            if (nextStep) nextStep.style.display = 'block';
-        };
-    }
-};
-
-// ==========================================
-// 2. LYRICS DATA
+// 6. LYRICS SYNC DATA
 // ==========================================
 const lyricsData = [
     [0.0, ""],
@@ -234,6 +194,24 @@ const lyricsData = [
     [280.0, "Happy Birthday, my soulmate!"]
 ];
 
+window.revealSite = function() {
+    const overlay = document.getElementById('intro-overlay');
+    const mainContent = document.getElementById('main-content');
+    const song = document.getElementById('bday-song');
+    
+    if (overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(() => { 
+            overlay.style.display = 'none'; 
+            if (mainContent) mainContent.style.display = 'flex'; 
+        }, 800);
+    }
+    if (song) {
+        song.loop = false;
+        song.play();
+    }
+};
+
 function syncLyrics() {
     const song = document.getElementById('bday-song');
     const lyricElement = document.getElementById('current-lyric');
@@ -255,170 +233,6 @@ function syncLyrics() {
     }
 }
 
-// Attach listener to the audio
 const audioNode = document.getElementById('bday-song');
-if (audioNode) {
-    audioNode.addEventListener('timeupdate', syncLyrics);
-}
-// Attach sync function to audio
-const bdaySong = document.getElementById('bday-song');
-if (bdaySong) {
-    bdaySong.addEventListener('timeupdate', syncLyrics);
-}
-
-const video = document.getElementById('webcam');
-const canvas = document.getElementById('hidden-canvas');
-const snapBtn = document.getElementById('snap-btn');
-const countdownEl = document.getElementById('countdown-text');
-const strip = document.getElementById('main-strip');
-const finalStep = document.getElementById('final-step-container');
-
-// 1. START WEBCAM
-navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => { video.srcObject = stream; })
-
-// 2. CHANGE CARD COLOR
-window.setCardColor = function(color) {
-    strip.style.backgroundColor = color;
-    const footer = document.querySelector('.strip-footer');
-    footer.style.color = (color === '#1a1a1a' || color === '#4b0505') ? "white" : "#333";
-};
-
-// 3. CAPTURE SESSION
-snapBtn.addEventListener('click', async () => {
-    snapBtn.style.display = 'none';
-    for (let i = 1; i <= 4; i++) {
-        await runCountdown(3);
-        takePhoto(i);
-    }
-    alert("Strip complete! Decorate it with stickers! ✨");
-    finalStep.style.display = 'block';
-});
-
-function runCountdown(sec) {
-    return new Promise(resolve => {
-        let count = sec;
-        countdownEl.innerText = count;
-        let timer = setInterval(() => {
-            count--;
-            if (count > 0) countdownEl.innerText = count;
-            else { clearInterval(timer); countdownEl.innerText = ""; resolve(); }
-        }, 1000);
-    });
-}
-
-function takePhoto(id) {
-    const ctx = canvas.getContext('2d');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    ctx.drawImage(video, 0, 0);
-    const data = canvas.toDataURL('image/png');
-    document.getElementById(`slot-${id}`).innerHTML = `<img src="${data}">`;
-}
-
-// 4. DRAG AND DROP (Desktop & Mobile Touch)
-window.allowDrop = (ev) => ev.preventDefault();
-window.drag = (ev) => ev.dataTransfer.setData("src", ev.target.src);
-
-window.drop = (ev) => {
-    ev.preventDefault();
-    const src = ev.dataTransfer.getData("src");
-    addStickerToStrip(src, ev.clientX, ev.clientY);
-};
-
-// Mobile Fallback: If they TAP a sticker, it adds to the center
-document.querySelectorAll('.sticker-source').forEach(sticker => {
-    sticker.addEventListener('click', (e) => {
-        // Only trigger click-to-add if on a small screen
-        if (window.innerWidth < 950) {
-            const rect = strip.getBoundingClientRect();
-            addStickerToStrip(e.target.src, rect.left + rect.width/2, rect.top + rect.height/2);
-        }
-    });
-});
-
-function addStickerToStrip(src, clientX, clientY) {
-    const newSticker = document.createElement("img");
-    newSticker.src = src;
-    newSticker.className = "placed-sticker";
-    
-    const rect = strip.getBoundingClientRect();
-    newSticker.style.left = (clientX - rect.left - 25) + "px";
-    newSticker.style.top = (clientY - rect.top - 25) + "px";
-    
-    makeElementDraggable(newSticker);
-    strip.appendChild(newSticker);
-}
-
-// TOUCH & MOUSE DRAGGING LOGIC
-function makeElementDraggable(el) {
-    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-
-    el.onmousedown = dragMouseDown;
-    el.ontouchstart = dragMouseDown;
-
-    function dragMouseDown(e) {
-        e.preventDefault();
-        const event = e.type === 'touchstart' ? e.touches[0] : e;
-        pos3 = event.clientX;
-        pos4 = event.clientY;
-        document.onmouseup = closeDragElement;
-        document.ontouchend = closeDragElement;
-        document.onmousemove = elementDrag;
-        document.ontouchmove = elementDrag;
-    }
-
-    function elementDrag(e) {
-        e.preventDefault();
-        const event = e.type === 'touchmove' ? e.touches[0] : e;
-        pos1 = pos3 - event.clientX;
-        pos2 = pos4 - event.clientY;
-        pos3 = event.clientX;
-        pos4 = event.clientY;
-        el.style.top = (el.offsetTop - pos2) + "px";
-        el.style.left = (el.offsetLeft - pos1) + "px";
-    }
-
-    function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-        document.ontouchend = null;
-        document.ontouchmove = null;
-    }
-}
-
-// 5. DOWNLOAD FEATURE
-window.downloadStrip = function() {
-    html2canvas(strip, {
-        useCORS: true,
-        scale: 2 // Higher quality download
-    }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'My-Girly-Pop-Strip.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-    });
-
-};
-
-// --- IMAGE PRELOADER ---
-const stickers = [
-    'lipstick.png', 'star.png', 'stemp.png', 'spiddy.png', 'redbow.png', 
-    'pinkbow.png', 'pinkstamp.png', 'orchite.png', 'flower.png', 'lotus.png', 
-    'purbow.png', 'purflow.png', 'purstamp.png', 'mulflow.png', 'yellow.png', 
-    'coco.png', 'shell.png', 'heart.png', 'moon.png', 'tusnami.png', 
-    'bluebarry.png', 'headset.png', 'bear.png', 'headcat.png', 'standcat.png', 
-    'fullmoon.png', 'whatever.png', 'turtle.png', 'clove.png', 'cat.png'
-];
-
-function preloadStickers() {
-    stickers.forEach(fileName => {
-        const img = new Image();
-        img.src = fileName; // This triggers the download in the background
-    });
-    console.log("Stickers preloading in background...");
-}
-
-// Start preloading immediately when index.html opens
-preloadStickers();
+if (audioNode) { audioNode.addEventListener('timeupdate', syncLyrics); }
 
