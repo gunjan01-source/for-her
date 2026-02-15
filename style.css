@@ -50,19 +50,19 @@ body {
 .loading-text { font-size: 1.8em; font-weight: bold; }
 
 .dot-loader {
-    display: block;
+    display: inline-block; /* Changed from block */
     font-size: 3em;
     font-weight: bold;
-    animation: typing-dots 1.5s steps(3) infinite;
-    width: 0;
+    width: 3ch; /* Sets width exactly to 3 characters/dots */
     overflow: hidden;
     white-space: nowrap;
-    margin: 0 auto;
+    animation: typing-dots 1.5s steps(3) infinite;
+    text-align: left;
 }
 
 @keyframes typing-dots {
     0% { width: 0; }
-    100% { width: 1.5em; } 
+    100% { width: 3ch; } /* Match the width above */
 }
 
 /* --- OVERLAYS (Choice Screens / Angry Cat) --- */
@@ -291,4 +291,5 @@ body {
 /* Ensure the main gift card matches */
 .gift-card {
     border: 5px solid #cb72ff !important;
+
 }
