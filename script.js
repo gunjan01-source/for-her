@@ -177,8 +177,29 @@ function startTyping() {
 }
 
 const lyricsData = [
-    [0.0, ""], [39.10, "I remember..."], [50.0, "We were sitting..."],
-    /* ... keep your full lyrics data here ... */
+    [0.0, ""],
+    [39.10, "I remember when I first noticed that you liked me back"],
+    [50.0, "We were sitting down in a restaurant, waiting for the check"],
+    [60.0, "We had made love earlier that day with no strings attached"],
+    [70.0, "But I could tell that something had changed, how you looked at me then"],
+    [80.0, "Kristen, come right back"],
+    [90.0, "I've been waiting for you to slip back in bed"],
+    [100.0, "When you light the candle"],
+    [120.0, "& on the Lower East Side you're dancing with me now"],
+    [135.0, "& I'm taking pictures of you with flowers on the wall"],
+    [145.0, "Think I like you best when you're dressed in black from head to toe"],
+    [155.0, "Think I like you best when you're just with me and no one else"],
+    [165.0, "Kristen, come right back"],
+    [170.0, "I've been waiting for you to slip back in bed"],
+    [180.0, "When you light the candle"],
+    [205.0, "And I'm kissing you, lying in my room"],
+    [220.0, "Holding you until you fall asleep"],
+    [231.0, "And it's just as good as I knew it would be"], 
+    [236.0, "Stay with me, I don't want you to leave"],
+    [263.0, "Kristen, come right back"],
+    [267.0, "I've been waiting for you to slip back in bed"],
+    [275.0, "When you light the candle"],
+    [280.0, "Happy Birthday, my soulmate!"]
 ];
 
 window.revealSite = function() {
@@ -352,5 +373,6 @@ window.downloadStrip = function() {
         link.click();
     });
 };
+
 
 
