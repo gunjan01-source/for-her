@@ -1,19 +1,35 @@
-/**
- * 1. STATE PERSISTENCE & INITIAL LOAD
- * Checks if she has already been here so we can skip the forms.
- */
-window.addEventListener('load', () => {
+
+// ==========================================
+// 1. SILENT PRELOADER (Runs in background)
+// ==========================================
+const stickers = [
+    'lipstick.png', 'star.png', 'stemp.png', 'spiddy.png', 'redbow.png', 
+    'pinkbow.png', 'pinkstamp.png', 'orchite.png', 'flower.png', 'lotus.png', 
+    'purbow.png', 'purflow.png', 'purstamp.png', 'mulflow.png', 'yellow.png', 
+    'coco.png', 'shell.png', 'heart.png', 'moon.png', 'tusnami.png', 
+    'bluebarry.png', 'headset.png', 'bear.png', 'headcat.png', 'standcat.png', 
+    'fullmoon.png', 'whatever.png', 'turtle.png', 'clove.png', 'cat.png'
+];
+
+function preloadStickers() {
+    stickers.forEach(fileName => {
+        const img = new Image();
+        img.src = fileName; 
+    });
+}
+preloadStickers();
+
+// ==========================================
+// 2. LOADING LOGIC (Timer-based for speed)
+// ==========================================
+function startSurprise() {
     const loadingPage = document.getElementById('loading-page');
     const choiceScreen = document.getElementById('choice-screen');
     const mainContent = document.getElementById('main-content');
     const song = document.getElementById('bday-song');
 
-    // Ensure the song DOES NOT loop
-    if (song) {
-        song.loop = false; 
-    }
+    if (song) { song.loop = false; }
 
-    // Check if she already passed the "Are you ready?" screen in this session
     if (sessionStorage.getItem('mainStarted') === 'true') {
         if (loadingPage) loadingPage.style.display = 'none';
         if (choiceScreen) choiceScreen.style.display = 'none';
@@ -22,28 +38,36 @@ window.addEventListener('load', () => {
             mainContent.classList.add('show-layout');
         }
     } else {
-        // First time load: Show choice screen after 2 seconds of loading
+        // Force the loader to disappear after 2.5 seconds
         setTimeout(() => {
-            if (loadingPage) loadingPage.style.display = 'none';
-            if (choiceScreen) choiceScreen.style.display = 'flex';
-        }, 2000);
+            if (loadingPage) {
+                loadingPage.style.opacity = '0';
+                setTimeout(() => {
+                    loadingPage.style.display = 'none';
+                    if (choiceScreen) choiceScreen.style.display = 'flex';
+                }, 500);
+            }
+        }, 2500);
     }
-});
+}
 
-/**
- * 2. NAVIGATION & CHOICE SCREEN FUNCTIONS
- * These are global so your HTML buttons can always find them.
- */
+// Run the start function as soon as the HTML structure is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startSurprise);
+} else {
+    startSurprise();
+}
 
-// First "Are you ready?" button
+// ==========================================
+// 3. NAVIGATION FUNCTIONS
+// ==========================================
 window.goToMain = function () {
     sessionStorage.setItem('mainStarted', 'true');
     const choiceScreen = document.getElementById('choice-screen');
     const mainContent = document.getElementById('main-content');
-    
     if (choiceScreen) choiceScreen.style.display = 'none';
     if (mainContent) {
-        mainContent.style.display = "flex"; // Changed to flex for your layout fix
+        mainContent.style.display = "flex";
         mainContent.classList.add('show-layout');
     }
 };
@@ -58,10 +82,7 @@ window.backToChoice = function () {
     document.getElementById('choice-screen').style.display = 'flex';
 };
 
-// --- Gift Modal Functions ---
-
 window.openGiftModal = function () {
-    // If she already agreed once, go straight to the next page
     if (sessionStorage.getItem('giftPassed') === 'true') {
         window.location.href = 'details.html';
     } else {
@@ -85,15 +106,14 @@ window.goToGift = function () {
     window.location.href = 'details.html';
 };
 
-/**
- * 3. INTERACTIVE PAGE ELEMENTS
- * Candle, Confetti, and Cursor Sparkles
- */
+// ==========================================
+// 4. INTERACTIVE ELEMENTS
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const candle = document.getElementById('candle-click-target');
     const flame = document.getElementById('flame');
-
     let isLit = false;
+
     if (candle && flame) {
         candle.addEventListener('click', () => {
             if (!isLit) {
@@ -123,7 +143,6 @@ function launchConfetti() {
     }
 }
 
-// Sparkle cursor effect (the pink hearts)
 document.addEventListener('mousemove', (e) => {
     const sparkle = document.createElement('div');
     sparkle.innerHTML = '💗';
@@ -133,10 +152,10 @@ document.addEventListener('mousemove', (e) => {
     setTimeout(() => sparkle.remove(), 800);
 });
 
-/**
- * 4. BIRTHDAY LETTER & TYPEWRITER
- */
-const bdayMessage = "Saba, \n\nHappy Birthday! I wanted to make you something special because you deserve the world. \n\nI hope i have put smile on your face. \n\nyour bestie, \nhehe ♥";
+// ==========================================
+// 5. LETTER & LYRICS
+// ==========================================
+const bdayMessage = "Saba, \n\nHappy Birthday! I wanted to make you something special because you deserve the world. \n\nI hope today is as wonderful as your smile. \n\nyour bestie, \nhehe ♥";
 let typeIndex = 0;
 let isLetterOpened = false;
 
@@ -157,12 +176,11 @@ function startTyping() {
     }
 }
 
-/**
- * 5. SONG REVEAL & LYRICS SYNC
- */
-// ==========================================
-// 1. REVEAL SITE & SONG LOGIC
-// ==========================================
+const lyricsData = [
+    [0.0, ""], [39.10, "I remember..."], [50.0, "We were sitting..."],
+    /* ... keep your full lyrics data here ... */
+];
+
 window.revealSite = function() {
     const overlay = document.getElementById('intro-overlay');
     const mainContent = document.getElementById('main-content');
@@ -175,47 +193,8 @@ window.revealSite = function() {
             if (mainContent) mainContent.style.display = 'flex'; 
         }, 800);
     }
-    
-    if (song) {
-        song.play();
-        
-        // When the song ends, we still show the 'Memories' button 
-        // as an extra surprise under the lyrics!
-        song.onended = function() {
-            const nextStep = document.getElementById('next-step-container');
-            if (nextStep) nextStep.style.display = 'block';
-        };
-    }
+    if (song) { song.loop = false; song.play(); }
 };
-
-// ==========================================
-// 2. LYRICS DATA
-// ==========================================
-const lyricsData = [
-    [0.0, ""],
-    [39.10, "I remember when I first noticed that you liked me back"],
-    [50.0, "We were sitting down in a restaurant, waiting for the check"],
-    [60.0, "We had made love earlier that day with no strings attached"],
-    [70.0, "But I could tell that something had changed, how you looked at me then"],
-    [80.0, "Kristen, come right back"],
-    [90.0, "I've been waiting for you to slip back in bed"],
-    [100.0, "When you light the candle"],
-    [120.0, "& on the Lower East Side you're dancing with me now"],
-    [135.0, "& I'm taking pictures of you with flowers on the wall"],
-    [145.0, "Think I like you best when you're dressed in black from head to toe"],
-    [155.0, "Think I like you best when you're just with me and no one else"],
-    [165.0, "Kristen, come right back"],
-    [170.0, "I've been waiting for you to slip back in bed"],
-    [180.0, "When you light the candle"],
-    [205.0, "And I'm kissing you, lying in my room"],
-    [220.0, "Holding you until you fall asleep"],
-    [231.0, "And it's just as good as I knew it would be"], 
-    [236.0, "Stay with me, I don't want you to leave"],
-    [263.0, "Kristen, come right back"],
-    [267.0, "I've been waiting for you to slip back in bed"],
-    [275.0, "When you light the candle"],
-    [280.0, "Happy Birthday, my soulmate!"]
-];
 
 function syncLyrics() {
     const song = document.getElementById('bday-song');
@@ -238,17 +217,8 @@ function syncLyrics() {
     }
 }
 
-// Attach listener to the audio
 const audioNode = document.getElementById('bday-song');
-if (audioNode) {
-    audioNode.addEventListener('timeupdate', syncLyrics);
-}
-// Attach sync function to audio
-const bdaySong = document.getElementById('bday-song');
-if (bdaySong) {
-    bdaySong.addEventListener('timeupdate', syncLyrics);
-}
-
+if (audioNode) { audioNode.addEventListener('timeupdate', syncLyrics); }
 const video = document.getElementById('webcam');
 const canvas = document.getElementById('hidden-canvas');
 const snapBtn = document.getElementById('snap-btn');
@@ -382,21 +352,3 @@ window.downloadStrip = function() {
         link.click();
     });
 };
-};
-
-const stickers = [
-    'lipstick.png', 'star.png', 'stemp.png', 'spiddy.png', 'redbow.png', 
-    'pinkbow.png', 'pinkstamp.png', 'orchite.png', 'flower.png', 'lotus.png', 
-    'purbow.png', 'purflow.png', 'purstamp.png', 'mulflow.png', 'yellow.png', 
-    'coco.png', 'shell.png', 'heart.png', 'moon.png', 'tusnami.png', 
-    'bluebarry.png', 'headset.png', 'bear.png', 'headcat.png', 'standcat.png', 
-    'fullmoon.png', 'whatever.png', 'turtle.png', 'clove.png', 'cat.png'
-];
-
-function preloadStickers() {
-    stickers.forEach(fileName => {
-        const img = new Image();
-        img.src = fileName; 
-    });
-}
-preloadStickers();
